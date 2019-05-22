@@ -12,14 +12,17 @@ alphabet = []
 weights = []
 
 
-# TODO: Check if the characters in guess are not found anywhere else in word.
-# TODO: Example: Guess: MIL.; Word: MILL => False => The word is MILE
 def check_word(word):
     global guess, alphabet
     if not word.isalpha() or len(word) != len(guess):
         return False
     for i in range(26):
-        if alphabet[i] == '.' and chr(i+ord('a')) in word:
+        if alphabet[i] == 'x':
+            char = chr(i+ord('a'))
+            for j in range(len(word)):
+                if guess[i] != char and word[i] == char:
+                    return False
+        if alphabet[i] == '.' and chr(i + ord('a')) in word:
             return False
 
     for i in range(len(guess)):
@@ -39,7 +42,8 @@ def reset_game():
     weights = [0.0 for i in range(26)]
 
     while word_length < min_chars or word_length > max_chars:
-        word_length = int(input('Enter the length of your word. (Between {} and {} characters): '.format(min_chars, max_chars)))
+        word_length = int(
+            input('Enter the length of your word. (Between {} and {} characters): '.format(min_chars, max_chars)))
         if word_length < min_chars or word_length > max_chars:
             print('Word length must be between {} and {} characters'.format(min_chars, max_chars))
 
@@ -50,7 +54,7 @@ def reload_words():
     global words
     words = []
 
-    with open('words.txt') as f:
+    with open('words_full.txt') as f:
         for word in f:
             word = word.lower().strip()
             if check_word(word):
@@ -82,6 +86,7 @@ def make_choice():
     alphabet[index] = '.'
     return choice
 
+
 # d  i  s  l  o  a  d
 # 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
 def main():
@@ -94,10 +99,12 @@ def main():
         choice = make_choice()
         is_choice_correct = input('Does your word contain \'{}\'? y/n: '.format(choice))
         if is_choice_correct.lower() == 'y':
-            locations = [int(loc) for loc in input('Enter the character \'{}\' in your word (1-{}): '.format(choice, word_length)).split(' ')]
+            locations = [int(loc) for loc in
+                         input('Enter the character \'{}\' in your word (1-{}): '.format(choice, word_length)).split(
+                             ' ')]
             for loc in locations:
-                guess[loc-1] = choice
-            alphabet[ord(choice)-ord('a')] = 'x'
+                guess[loc - 1] = choice
+            alphabet[ord(choice) - ord('a')] = 'x'
             reload_words()
             if '.' in guess and len(words) != 0:
                 calculate_weights()
@@ -105,7 +112,7 @@ def main():
             mistakes += 1
             reload_words()
             calculate_weights()
-            print('{} mistake{} left'.format(str(max_mistakes-mistakes), 's' if max_mistakes-mistakes != 1 else ''))
+            print('{} mistake{} left'.format(str(max_mistakes - mistakes), 's' if max_mistakes - mistakes != 1 else ''))
 
         if len(words) == 0:
             print("I could not guess your word.")
