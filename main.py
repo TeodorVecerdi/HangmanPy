@@ -1,8 +1,8 @@
 words = []
 word_length = 1
 mistakes = 0
-max_mistakes = 3
-min_chars = 2
+max_mistakes = 5
+min_chars = 3
 max_chars = 15
 found_word = False
 game_running = False
@@ -20,7 +20,7 @@ def check_word(word):
         if alphabet[i] == 'x':
             char = chr(i+ord('a'))
             for j in range(len(word)):
-                if guess[i] != char and word[i] == char:
+                if guess[j] != char and word[j] == char:
                     return False
         if alphabet[i] == '.' and chr(i + ord('a')) in word:
             return False
@@ -54,7 +54,7 @@ def reload_words():
     global words
     words = []
 
-    with open('words_full.txt') as f:
+    with open('words_clean.txt') as f:
         for word in f:
             word = word.lower().strip()
             if check_word(word):
@@ -87,7 +87,7 @@ def make_choice():
     return choice
 
 
-# d  i  s  l  o  a  d
+# m  o  t  h  e  r
 # 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
 def main():
     global game_running, found_word, mistakes, word_length, guess, game_lost, max_mistakes
